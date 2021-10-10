@@ -1,0 +1,4 @@
+pyOpenSSL==20.0.1
+cryptography==3.2.1
+tldextract==2.2.2
+dnspython==1.16.0
