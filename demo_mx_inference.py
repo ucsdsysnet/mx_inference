@@ -29,8 +29,8 @@ def setup_config(args):
     if args.disable_heuristics == False and args.disable_heuristics_tls_pattern == True:
         CONFIG['USE_HEURISTICS']['FUNCS'].remove('CERT_PATTERN')
 
-    if args.disable_heuristics == False and type(args.heuristics_threashold) == int:
-        CONFIG['USE_HEURISTICS']['THRESHOLD'] = args.heuristics_threashold
+    if args.disable_heuristics == False and type(args.heuristics_threshold) == int:
+        CONFIG['USE_HEURISTICS']['THRESHOLD'] = args.heuristics_threshold
 
     if type(args.map_id_to_company) == bool:
         CONFIG['PROVIDER_ID_TO_COMPANY'] = args.map_id_to_company
@@ -55,13 +55,13 @@ def main():
     parser.add_argument("--disable_tls", default = False, action='store_true', help="Don't use cert information for inference")
     parser.add_argument("--disable_banner", default = False,  action='store_true', help="Don't use banner/ehlo information for inference")
 
-    # Determine what heursistics to use
-    parser.add_argument("--disable_heuristics", default = False, action='store_true', help="Do not use heurisitcs at all")
-    # Apply heuristics when confidence score <= threashold
-    parser.add_argument("--heuristics_threashold", default = 5, type=int, help="Threashold to apply heursitics; Applied when conf score <= threashold")
-    parser.add_argument("--disable_heuristics_as", default = False, action='store_true', help="Don't use heursitics that based on AS information")
-    parser.add_argument("--disable_heuristics_tls_pattern", default = False, action='store_true', help="Don't use heursitics that based on TLS Cert FQDN pattern")
-    parser.add_argument("--disable_heuristics_banner_pattern", default = False, action='store_true', help="Don't use heursitics that based on banner/ehlo FQDN pattern")
+    # Determine what heuristics to use
+    parser.add_argument("--disable_heuristics", default = False, action='store_true', help="Do not use heuristics at all")
+    # Apply heuristics when confidence score <= threshold
+    parser.add_argument("--heuristics_threshold", default = 5, type=int, help="Threshold to apply heuristics; Applied when conf score <= threshold")
+    parser.add_argument("--disable_heuristics_as", default = False, action='store_true', help="Don't use heuristics that based on AS information")
+    parser.add_argument("--disable_heuristics_tls_pattern", default = False, action='store_true', help="Don't use heuristics that based on TLS Cert FQDN pattern")
+    parser.add_argument("--disable_heuristics_banner_pattern", default = False, action='store_true', help="Don't use heuristics that based on banner/ehlo FQDN pattern")
 
     # Try mapping provider id to company using heuristics
     parser.add_argument("--map_id_to_company", default = True, type=bool, help="Whether to try mapping provider id to company")

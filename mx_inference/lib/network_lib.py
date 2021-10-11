@@ -16,6 +16,7 @@ import ssl
 import OpenSSL
 import smtplib
 import os 
+from subprocess import Popen, PIPE
 from os import listdir
 from os.path import isfile, join
 from datetime import datetime
@@ -156,8 +157,12 @@ def verify_certificate_chain(cert_to_verify):
     try:
         with open(tmp_pem_path, "w") as f:
             f.write(OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cert_to_verify).decode("ascii"))
-        output = subprocess.check_output("openssl verify -CAfile {0}/Root_CA.pem -untrusted {0}/Intermediate_CA.pem {0}/pem_to_verify.pem".format(cert_dir), shell = True)
-        output = output.decode("ascii")
+
+        process = Popen("openssl verify -CAfile {0}/Root_CA.pem -untrusted {0}/Intermediate_CA.pem {0}/pem_to_verify.pem".format(cert_dir), shell = True, stdout=PIPE, stderr=PIPE)
+        stdout, stderr = process.communicate()
+        stdout = stdout.decode()
+        stderr = stderr.decode()
+        output = stdout + stderr
         
         if "{}: OK".format(tmp_pem_path) in output:
             browser_trusted = True
@@ -186,7 +191,7 @@ def _smtp_port_scan(ip, port=25, local_server_name = 'seldusaer.dev', timeout=30
     x509 = None
     message = None
     try:
-        connection = smtplib.SMTP(timeout = timeout)
+        connection = smtplib.SMTP(ip, timeout = timeout)
         banner_raw = connection.connect(ip, port)
         banner = " ".join([str(banner_raw[0]), banner_raw[1].decode('ascii')])
         banner = banner.replace("\t"," ").replace('"',"").replace("'","")

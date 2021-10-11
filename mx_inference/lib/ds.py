@@ -39,7 +39,7 @@ class ProviderID():
                 string += "ID:{}, Type:{}, Source:{}, Conf_Score:{}\n".format(self.provider_id, self.provider_id_type, self.source, self.score)
             else:
                 string += "ID:{}, Type:{}, Source:{}, Conf_Score:{}, Debug MSG:{}\n".format(self.provider_id, self.provider_id_type, self.source, self.score, self.msg)
-
+            
             # provider_id misleading, should use the new one
             if self.heuristics_obj.corrected == 1:
                 string += "\tHeuristics suggests new provider id: {}, reason: {}\n".format(self.heuristics_obj.new_provider_id, self.heuristics_obj.msg)
