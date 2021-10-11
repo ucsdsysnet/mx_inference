@@ -128,9 +128,9 @@ python3 demo_mx_inference.py --load_data_from_path=/path/to/saved/data
 --disable_banner: do not use banner/EHLO information for inference
 --disable_heuristics: do not apply any heuristics
 --heuristics_threshold: apply heuristics when confidence score <= threshold
---disable_heuristics_as: do not use heuristics that based on AS information
---disable_heuristics_tls_pattern: do not use heuristics that based on TLS FQDN pattern
---disable_heuristics_banner_pattern: do not use heuristics that based on Banner/EHLO FQDN pattern
+--disable_heuristics_as: do not use heuristics that are based on AS information
+--disable_heuristics_tls_pattern: do not use heuristics that are based on TLS FQDN pattern
+--disable_heuristics_banner_pattern: do not use heuristics that are based on Banner/EHLO FQDN pattern
 --map_id_to_company: Try mapping provider id to company. Default: True
 --save_scan_data: Save scanned data of domains. Default: True
 --debug: Debug information level. 0 = Minimum, 1 = Light, 2 = Verbose. Default: 0.
@@ -140,7 +140,7 @@ python3 demo_mx_inference.py --load_data_from_path=/path/to/saved/data
     mx_inference
     ├── ...
     ├── lib/                       # Libraries
-    │	├── certs/                 # CA/Intermediate Certificates 
+    │   ├── certs/                 # CA/Intermediate Certificates 
     │   ├── cert.py                # Handle certificates
     │   ├── ds.py                  # Data structures
     │   ├── extract_domain.py      # Extract domain from strings
