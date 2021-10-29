@@ -37,7 +37,7 @@ We tested our code with Python 3.6/3.8 and OpenSSL version 1.1.1i/1.0.2g on Ubun
 
 ## Usage
 ### Default Setup
-We have some examples built in. You can simply run the following command (might take a while):
+We have some examples built in. You can simply run the following command (**might take a while**):
 ```
 python3 demo_mx_inference.py
 ```
@@ -97,6 +97,16 @@ Domain: arfonts.net
 	...
 ```
 
+All scanning results are saved by default with the following name pattern under the project directory:
+```
+mx_inference-data-timestamp.csv
+```
+
+You can load the data saved locally and run the inference program on those domains.
+```
+python3 demo_mx_inference.py --load_data_from_path=/path/to/saved/data
+```
+
 ### Providers of domains
 You can probe domains of your choice.
 ```
@@ -116,12 +126,26 @@ Domain: ucsd.edu
 	...
 ```
 
-### Load saved data from path
-You can load domains saved locally and run the inference program on those domains.
+
+### More verbose debug information
+This is helpful when you are not getting expected results. 
 ```
-python3 demo_mx_inference.py --load_data_from_path=/path/to/saved/data
+# Additional debug info
+python3 demo_mx_inference.py --debug=1
+
+# Very verbose debug info
+python3 demo_mx_inference.py --debug=2
 ```
 
+### Play with different data sources for inference
+Make inference based on TLS and MX
+```
+python3 demo_mx_inference.py --disable_banner
+```
+Make inference based on Banner/EHLO and MX
+```
+python3 demo_mx_inference.py --disable_tls
+```
 ### Other Arguments
 ```
 --disable_tls: do not use TLS certificates for inference
@@ -135,6 +159,13 @@ python3 demo_mx_inference.py --load_data_from_path=/path/to/saved/data
 --save_scan_data: Save scanned data of domains. Default: True
 --debug: Debug information level. 0 = Minimum, 1 = Light, 2 = Verbose. Default: 0.
 ```
+
+## Note
+* This tool is not designed for large-scale analysis. Please use third-party datasets instead (e.g., [OpenINTEL](https://openintel.nl/) and [Censys](censys.io/)). 
+* This tool is not tested with IPv6.
+* This tool does NOT infer the eventual mail provider used by end users of domain.
+* Use our heuristics with a grain of salt.
+
 
 ## Project Structure
     mx_inference
@@ -155,17 +186,13 @@ python3 demo_mx_inference.py --load_data_from_path=/path/to/saved/data
     └── inference.py               # High-level wrapper for inferring mail providers of a domain
 
 
-## Note
-* This tool is not designed for large-scale analysis. Please use third-party datasets instead (e.g., [OpenINTEL](https://openintel.nl/) and [Censys](censys.io/)). 
-* This tool is not tested with IPv6.
-* This tool does NOT infer the eventual mail provider used by end users of domain.
-* Use our heuristics with a grain of salt.
+
 
 
 ## Extending This Work
-* **How do I import my own data?** If you have some data and want to use our tool, you add your own load data function in `helper.py`. An example function `load_domain_data_from_path_format_censys` can be found in `helper.py`.
+* **How do I import my own data?** If you have some data and want to use our tool, you add your own load data function in `helper.py`. An example function `load_domain_data_from_path_format_censys` can be found in `helper.py`. Data associated with each domain is loaded in `demo_mx_inference.py` by calling `load_domain_data_from_path_format_censys`.
 * **How do I add other information for inference (e.g., rDNS of an IP)?** If you find the information we use (i.e., MX, Banner/EHLO, TLS) for inference is not satisfying, you can modify the data structures defined in `ds.py` and scanning functions defined in `network_lib.py`.
-* **How do I add my own heuristics?** You can find our heuristics in `heuristics.py`
+* **How do I add my own heuristics?** You can find our heuristics in `heuristics.py`. Heursitic functions are used by `_infer_provider_id_for_mx_of_one_domain` function in `inference.py`.
 
 
 ## Cite Our Paper

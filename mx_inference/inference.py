@@ -49,6 +49,8 @@ class MXInference():
                 if "OK" in potential_provider_id.provider_id_type:
                     mx.pid = potential_provider_id
 
+                    #### Run Heuristics ####
+
                     # If USE_HEURISTICS
                     if 'USE_HEURISTICS' in CONFIG:
                         Heuristics.run_heuristics(mx)

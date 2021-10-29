@@ -30,6 +30,7 @@ def convert_domain_object_to_list_of_records_format_censys(domain_data):
         IPv4 of MX : str or None
         ASN of IPv4 : int or None
         ip_info_p25 : dict or None
+        ip_scan_debug_message: str or None
     """
 
     result_list = []
@@ -51,6 +52,8 @@ def convert_domain_object_to_list_of_records_format_censys(domain_data):
             current_ip_asn = int(ip.as_number) if ip.as_number != None else None
             current_cert = ip.cert_data
             current_smtp = ip.smtp_data
+
+            ip_scan_debug_message = ip.port_scan_debug_message
             
             # Construct port 25 data
             p_25_dict = None
@@ -74,10 +77,8 @@ def convert_domain_object_to_list_of_records_format_censys(domain_data):
                     p_25_dict['smtp']['starttls']['tls']["validation"] = {}
                     p_25_dict['smtp']['starttls']['tls']["validation"]["browser_trusted"] = current_cert.browser_trusted
                     p_25_dict['smtp']['x509_msg'] = current_cert.debug_message
-                
-                p_25_dict['smtp']['port_scan_msg'] = ip.port_scan_debug_message
             
-            result_list.append((domain_name, current_mx, current_mx_pref, current_ip, current_ip_asn, p_25_dict))
+            result_list.append((domain_name, current_mx, current_mx_pref, current_ip, current_ip_asn, p_25_dict, ip_scan_debug_message))
 
         # No IP for an MX
         if has_ip == False:
@@ -93,7 +94,7 @@ def convert_domain_object_to_list_of_records_format_censys(domain_data):
 
 
 # Dump data to csv in censys format
-def dump_domain_data_to_csv_format_censys(domains, output_file, headers = ["domain_name","mx","mx_pref","ip_of_mx","asn_of_ip","dict_scanning_data"], delimiter = '\t'):
+def dump_domain_data_to_csv_format_censys(domains, output_file, headers = ["domain_name","mx","mx_pref","ip_of_mx","asn_of_ip","dict_scanning_data","ip_scan_debug_message"], delimiter = '\t'):
     records = []
     for domain_data in domains:
         records += convert_domain_object_to_list_of_records_format_censys(domain_data)
@@ -108,7 +109,7 @@ def _read_records_of_one_domain(filepath, has_header = True, delimiter = '\t'):
         if has_header == True:
             next(csvreader)
         for record in csvreader:
-            domain_name, mx, mx_pref, ip_of_mx, asn_of_ip, dict_scanning_data = record
+            domain_name, mx, mx_pref, ip_of_mx, asn_of_ip, dict_scanning_data, ip_scan_debug_message = record
             if current_domain == None:
                 current_domain = domain_name
                 current_records.append(record)
@@ -163,7 +164,7 @@ def load_domain_data_from_path_format_censys(filepath, has_header = True, delimi
             domain_data = DomainData(domain_name)
 
         for record in records:
-            domain_name, mx, mx_pref, ip_of_mx, asn_of_ip, dict_scanning_data = record
+            domain_name, mx, mx_pref, ip_of_mx, asn_of_ip, dict_scanning_data, ip_scan_debug_message = record
             if mx == "":
                 mx = None
             # This should not be none
@@ -180,7 +181,7 @@ def load_domain_data_from_path_format_censys(filepath, has_header = True, delimi
                 dict_scanning_data = None
                 
             a = mx_records_to_data[(mx, mx_pref)]
-            mx_records_to_data[(mx, mx_pref)][ip_of_mx] = (asn_of_ip, dict_scanning_data)
+            mx_records_to_data[(mx, mx_pref)][ip_of_mx] = (asn_of_ip, dict_scanning_data, ip_scan_debug_message)
         
         for mx, mx_pref in mx_records_to_data.keys():
             if mx == None:
@@ -192,12 +193,13 @@ def load_domain_data_from_path_format_censys(filepath, has_header = True, delimi
             for ipv4_address in mx_records_to_data[(mx, mx_pref)].keys():
                 if ipv4_address == None:
                     continue
-                asn, dict_scanning_data = mx_records_to_data[(mx, mx_pref)][ipv4_address]
+                asn, dict_scanning_data, ip_scan_debug_message = mx_records_to_data[(mx, mx_pref)][ipv4_address]
 
                 # Further process
                 if asn != None:
                     asn = int(asn)
                 ip_data = IPData(ipv4_address, asn)
+                ip_data.set_debug_message(ip_scan_debug_message)
                 mx_data.add_parsed_ip(ip_data)
 
                 smtp_data, cert_data = _parse_dict_scanning_data(dict_scanning_data)

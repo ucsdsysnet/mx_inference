@@ -5,6 +5,7 @@ from mx_inference.lib.helper import dump_domain_data_to_csv_format_censys, load_
 from datetime import datetime
 import argparse
 import os
+import subprocess
 
 EXAMPLE_DOMAINS = ["ucsd.edu","netflix.com","gsipartners.com","lodi.gov","jeniustoto.net",\
     "sgnetway.net","bbw-chan.nl","utexas.edu","summitorganization.org","arfonts.net"]
@@ -43,6 +44,14 @@ def setup_config(args):
 
 
 def main():
+    # Check if openssl is installed
+    try:
+        subprocess.call(["openssl", "version"])
+    except FileNotFoundError:
+        print("Command line util openssl not found. Please install!")
+        return
+
+    # Parsing
     parser = argparse.ArgumentParser()
     
     # Specify the domains One Want To Probe

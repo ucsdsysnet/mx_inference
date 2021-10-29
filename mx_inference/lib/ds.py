@@ -229,7 +229,12 @@ class IPData:
 
     def __repr__(self):
         string = ""
-        string += "IPv4: {}, ASN: {}\n".format(self.ipv4_address, self.as_number)
+        string += "IPv4: {}, ASN: {}".format(self.ipv4_address, self.as_number)
+        if CONFIG['DEBUG_LEVEL'] == 0:
+             string += "\n"
+        else:
+            string += ", Port Scan Msg: {}\n".format(self.port_scan_debug_message)
+        
         if self.smtp_data != None:
             string += ''.join(['\t' + i for i in str(self.smtp_data).splitlines(True)])
         if self.cert_data != None:
