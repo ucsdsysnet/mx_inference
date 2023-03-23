@@ -143,7 +143,7 @@ class SMTPData:
         self.data['ehlo_rd_type'] = ehlo_rd_type
 
     def has_valid_banner_rd(self):
-        if 'OK' in self.data['banner_rd_type'] and self.data['banner_rd'] != None:
+        if 'banner_rd_type' in self.data and 'OK' in self.data['banner_rd_type'] and 'banner_rd' in self.data and self.data['banner_rd'] != None:
             return True
         return False
 
@@ -160,7 +160,7 @@ class SMTPData:
 
 
     def has_valid_ehlo_rd(self):
-        if 'OK' in self.data['ehlo_rd_type'] and self.data['ehlo_rd'] != None:
+        if 'ehlo_rd_type' in self.data and 'OK' in self.data['ehlo_rd_type'] and 'ehlo_rd' in self.data and self.data['ehlo_rd'] != None:
             return True
         return False
 
@@ -196,14 +196,20 @@ class SMTPData:
     def __repr__(self):
         string = ""
         if CONFIG['DEBUG_LEVEL'] == 0:
-            string += "Banner RD: {}\n".format(self.data['banner_rd'])
-            string += "EHLO RD: {}\n".format(self.data['ehlo_rd'])
+            if self.has_valid_banner_rd():
+                string += "Banner RD: {}\n".format(self.data['banner_rd'])
+            if self.has_valid_ehlo_rd():
+                string += "EHLO RD: {}\n".format(self.data['ehlo_rd'])
         elif CONFIG['DEBUG_LEVEL'] == 1:
-            string += "Banner RD: {} Banner RD Type: {}\n".format(self.data['banner_rd'],self.data['banner_rd_type'])
-            string += "EHLO RD: {} EHLO RD Type:{}\n".format(self.data['ehlo_rd'],self.data['ehlo_rd_type'])
+            if self.has_valid_banner_rd():
+                string += "Banner RD: {} Banner RD Type: {}\n".format(self.data['banner_rd'],self.data['banner_rd_type'])
+            if self.has_valid_ehlo_rd():
+                string += "EHLO RD: {} EHLO RD Type:{}\n".format(self.data['ehlo_rd'],self.data['ehlo_rd_type'])
         else:
-            string += "Banner RD: {} Banner RD Type: {} Banner Message: {}\n".format(self.data['banner_rd'],self.data['banner_rd_type'],repr(self.data['banner_message']) if 'banner_message' in self.data else "None")
-            string += "EHLO RD: {} EHLO RD Type:{} EHLO Message: {}\n".format(self.data['ehlo_rd'],self.data['ehlo_rd_type'],repr(self.data['ehlo_message']) if 'ehlo_message' in self.data else "None")
+            if self.has_valid_banner_rd():
+                string += "Banner RD: {} Banner RD Type: {} Banner Message: {}\n".format(self.data['banner_rd'],self.data['banner_rd_type'],repr(self.data['banner_message']) if 'banner_message' in self.data else "None")
+            if self.has_valid_ehlo_rd():
+                string += "EHLO RD: {} EHLO RD Type:{} EHLO Message: {}\n".format(self.data['ehlo_rd'],self.data['ehlo_rd_type'],repr(self.data['ehlo_message']) if 'ehlo_message' in self.data else "None")
 
         return string
         
