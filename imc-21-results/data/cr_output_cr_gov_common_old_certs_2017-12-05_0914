@@ -1,0 +1,28 @@
+Args:
+('cr_gov_common_old_certs', '2017-12-05', 30, 50, False)
+
+('Preprocess: # of mx records that are not rfc compliant', 0)
+('Preprocess: # of mx records that are not resolvable', 0)
+('# of domains without resolvable mx', 0)
+('# of domains with resolvable mx', 0)
+('# of domains with no censys coverage', 0)
+('# of domains with partial censys coverage', 0)
+('# of domains with full censys coverage', 0)
+('# of domains (full coverage) with no responding smtp server', 0)
+('# of domains (full coverage) with responding smtp server', 0)
+('# of domains (part coverage) with no responding smtp server', 0)
+('# of domains (part coverage) with responding smtp server', 0)
+('# of domains with no Valid TLS certs (ALL TLS are VALID)', 0)
+('# of domains with no Banner/EHLO (ALL BE are VALID)', 0)
+('# of domains with no Missing Data (Everything are VALID)', 0)
+
+Top Providers and ASNs (with false positives)
+
+Top Company and ASNs (with false positives):
+
+Top Company's Provider IDs:
+
+Corner Cases and Decision:
+
+Companys and Market Share (cleaned):
+
